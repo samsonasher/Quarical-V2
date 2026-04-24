@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quarical — Tuned to the Smallest Signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0c1420; }
+
+.qrcl-root {
+  --bg: #0c1420;
+  --bg-2: #0f1827;
+  --ink: #ece6d8;
+  --ink-dim: #a8a193;
+  --ink-faint: #5b5a52;
+  --rule: rgba(236, 230, 216, 0.08);
+  --accent: #ff7a35;
+  --amber: #d6b46a;
+  --green: #6db77f;
+  --red: #d77a7a;
+
+  --serif: 'Fraunces', 'Times New Roman', serif;
+  --sans: 'Inter Tight', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.55;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+.qrcl-root * { box-sizing: border-box; }
+.qrcl-root a { color: inherit; text-decoration: none; }
+
+/* Decorative grid */
+.qrcl-grid {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  pointer-events: none; z-index: 0;
+}
+.qrcl-grid > span {
+  border-right: 1px dashed var(--rule);
+}
+.qrcl-grid > span:last-child { border-right: none; }
+
+/* Nav */
+.qrcl-nav {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 56px;
+}
+.qrcl-logo { display: inline-block; width: 110px; color: var(--ink); }
+.qrcl-logo svg { width: 100%; height: auto; display: block; }
+.qrcl-nav-links { display: flex; gap: 32px; align-items: center; font-size: 14px; }
+.qrcl-nav-links a { color: var(--ink-dim); transition: color .15s; }
+.qrcl-nav-links a:hover { color: var(--ink); }
+.qrcl-cta-sm {
+  background: var(--accent); color: #1a0f08 !important;
+  padding: 8px 16px; border-radius: 4px; font-weight: 500;
+}
+.qrcl-cta-sm:hover { filter: brightness(1.08); }
+
+/* Hero */
+.qrcl-hero {
+  position: relative; z-index: 1;
+  padding: 60px 56px 100px;
+}
+.qrcl-hero-inner { max-width: 1200px; margin: 0 auto; padding-left: 16.66%; }
+.qrcl-h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(48px, 6.5vw, 92px);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  margin: 0 0 36px;
+  color: var(--ink);
+}
+.qrcl-h1 em { font-style: italic; font-weight: 400; }
+.qrcl-hero-body { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 720px; }
+.qrcl-lede { font-size: 17px; line-height: 1.5; margin: 0; color: var(--ink); }
+.qrcl-sub { font-size: 13px; color: var(--ink-dim); margin: 0; align-self: end; }
+.qrcl-hero-cta { margin-top: 36px; }
+.qrcl-cta {
+  display: inline-block;
+  padding: 14px 26px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  transition: background .15s, color .15s;
+}
+.qrcl-cta:hover { background: var(--ink); color: var(--bg); }
+
+/* Section label (left gutter marginalia) */
+.qrcl-section-label {
+  grid-column: 1;
+  padding-top: 8px;
+}
+.qrcl-eyebrow {
+  display: block;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  border-top: 1px solid var(--ink);
+  padding-top: 14px;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+.qrcl-h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  margin: 0;
+  color: var(--ink);
+}
+.qrcl-h2 em { font-style: italic; font-weight: 400; }
+
+/* Install */
+.qrcl-install {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: 40px;
+  padding: 80px 56px;
+  border-top: 1px solid var(--rule);
+}
+.qrcl-terminal {
+  background: #1a1408;
+  border: 1px solid #2a2412;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--amber);
+  overflow: hidden;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+}
+.qrcl-terminal-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 14px;
+  background: #14100a;
+  border-bottom: 1px solid #2a2412;
+}
+.qrcl-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.qrcl-dot-r { background: #ff5f57; }
+.qrcl-dot-y { background: #febc2e; }
+.qrcl-dot-g { background: #28c840; }
+.qrcl-terminal-title {
+  margin-left: 14px; font-size: 11px; color: #6b5e3a;
+}
+.qrcl-terminal-body {
+  padding: 18px 20px; min-height: 320px;
+}
+.qrcl-terminal-body pre {
+  margin: 0; white-space: pre-wrap;
+  font-family: var(--mono); color: var(--amber); line-height: 1.55;
+}
+.qrcl-tx-amber { color: var(--accent); font-weight: 500; }
+.qrcl-tx-faint { color: #6b5e3a; }
+.qrcl-cursor {
+  display: inline-block; color: var(--amber);
+  animation: qrcl-blink 1s steps(1) infinite;
+}
+@keyframes qrcl-blink { 50% { opacity: 0; } }
+
+.qrcl-install-cmd { padding-top: 8px; }
+.qrcl-tabs {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px; font-size: 12px;
+}
+.qrcl-tabs .qrcl-eyebrow {
+  border: none; padding: 0; margin: 0; margin-right: 6px;
+}
+.qrcl-tab {
+  background: transparent; color: var(--ink-dim);
+  border: 1px solid transparent;
+  padding: 4px 10px; font-family: inherit; font-size: 12px;
+  cursor: pointer; border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+.qrcl-tab.is-active { background: rgba(236,230,216,0.08); color: var(--ink); }
+.qrcl-cmd {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-family: var(--mono); font-size: 12px;
+  color: var(--ink);
+}
+.qrcl-cmd code { flex: 1; overflow-x: auto; }
+.qrcl-copy {
+  background: none; border: none; color: var(--ink-dim); cursor: pointer; font-size: 14px;
+}
+.qrcl-copy:hover { color: var(--ink); }
+
+/* Explore */
+.qrcl-explore {
+  position: relative; z-index: 1;
+  padding: 80px 56px;
+  border-top: 1px solid var(--rule);
+}
+.qrcl-explore-head {
+  display: flex; justify-content: space-between; align-items: end;
+  margin: -8px 0 30px;
+}
+.qrcl-explore-head p {
+  font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); margin: 0;
+}
+.qrcl-arrows { display: flex; gap: 6px; }
+.qrcl-arrows button {
+  width: 32px; height: 32px; border: 1px solid var(--rule);
+  background: transparent; color: var(--ink-dim);
+  font-size: 18px; cursor: pointer; border-radius: 3px;
+  font-family: var(--serif);
+}
+.qrcl-arrows button:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+.qrcl-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+.qrcl-card {
+  position: relative;
+  background: #0a111c;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 20px;
+  min-height: 280px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.qrcl-card:hover { border-color: rgba(236,230,216,0.18); transform: translateY(-2px); }
+.qrcl-card-topo {
+  position: absolute; inset: 0; color: var(--ink); pointer-events: none; opacity: 0.5;
+}
+.qrcl-card-topo svg { width: 100%; height: 100%; }
+.qrcl-card-title {
+  position: relative; z-index: 1;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.15;
+  margin: 60px 0 16px;
+  color: var(--ink);
+}
+.qrcl-card-author {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--ink-dim);
+}
+.qrcl-avatar {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--amber));
+}
+.qrcl-card-meta {
+  position: relative; z-index: 1;
+  display: flex; justify-content: space-between; align-items: end;
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 11px;
+}
+.qrcl-meta-left { display: flex; flex-direction: column; gap: 4px; color: var(--ink-dim); }
+.qrcl-meta-left span { display: block; }
+.qrcl-badge { color: var(--ink) !important; }
+.qrcl-meta-right { display: flex; flex-direction: column; gap: 2px; text-align: right; }
+.qrcl-plus { color: var(--green); }
+.qrcl-minus { color: var(--red); }
+.qrcl-tilde { color: var(--ink-dim); }
+
+/* News */
+.qrcl-news {
+  position: relative; z-index: 1;
+  padding: 80px 56px;
+  border-top: 1px solid var(--rule);
+}
+.qrcl-news-list {
+  margin-top: -8px;
+}
+.qrcl-news-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 32px;
+  padding: 22px 0;
+  border-top: 1px solid var(--rule);
+  align-items: baseline;
+  transition: padding-left .2s;
+}
+.qrcl-news-row:hover { padding-left: 8px; }
+.qrcl-news-row:hover .qrcl-news-title { color: var(--accent); }
+.qrcl-news-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.06em;
+}
+.qrcl-news-title {
+  font-family: var(--serif); font-weight: 500;
+  font-size: 22px; line-height: 1.2;
+  margin: 0 0 6px; color: var(--ink);
+  transition: color .15s;
+}
+.qrcl-news-desc { font-size: 14px; color: var(--ink-dim); margin: 0; }
+.qrcl-news-more {
+  display: block;
+  border-top: 1px solid var(--rule);
+  padding: 22px 0;
+  text-align: center;
+  font-size: 11px; letter-spacing: 0.18em;
+  color: var(--ink-dim);
+}
+.qrcl-news-more:hover { color: var(--ink); }
+
+/* Quotes */
+.qrcl-quotes {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+  padding: 80px 56px; border-top: 1px solid var(--rule);
+}
+.qrcl-quote { margin: 0; }
+.qrcl-quote blockquote {
+  font-family: var(--serif); font-style: italic;
+  font-size: 16px; line-height: 1.45;
+  margin: 0 0 14px; color: var(--ink);
+  font-weight: 400;
+}
+.qrcl-quote figcaption {
+  font-size: 12px; color: var(--ink-dim);
+}
+
+/* Footer */
+.qrcl-footer {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 2fr; gap: 60px;
+  padding: 100px 56px 60px;
+  border-top: 1px solid var(--rule);
+}
+.qrcl-logo-lg { width: 160px; }
+.qrcl-status {
+  font-size: 12px; color: var(--ink-dim);
+  margin: 24px 0 16px; display: flex; align-items: center; gap: 8px;
+}
+.qrcl-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+}
+.qrcl-footer-meta {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 12px; color: var(--ink-dim);
+}
+.qrcl-footer-meta a:hover { color: var(--ink); }
+.qrcl-footer-cols {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+}
+.qrcl-footer-cols h5 {
+  font-family: var(--sans); font-weight: 500; font-size: 13px;
+  margin: 0 0 16px; color: var(--ink);
+}
+.qrcl-footer-cols ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--ink-dim); }
+.qrcl-footer-cols a:hover { color: var(--ink); }
+
+/* Section grid placement: section-label sits in left gutter */
+.qrcl-explore, .qrcl-news, .qrcl-install {
+  display: grid;
+}
+.qrcl-explore { grid-template-columns: 16.66% 1fr; }
+.qrcl-news    { grid-template-columns: 16.66% 1fr; }
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .qrcl-cards { grid-template-columns: repeat(2, 1fr); }
+  .qrcl-quotes { grid-template-columns: repeat(2, 1fr); }
+  .qrcl-install { grid-template-columns: 1fr; }
+  .qrcl-explore, .qrcl-news { grid-template-columns: 1fr; }
+  .qrcl-hero-inner { padding-left: 0; }
+  .qrcl-footer { grid-template-columns: 1fr; }
+  .qrcl-footer-cols { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .qrcl-nav { padding: 20px 24px; flex-wrap: wrap; gap: 16px; }
+  .qrcl-nav-links { gap: 16px; font-size: 13px; }
+  .qrcl-hero, .qrcl-install, .qrcl-explore, .qrcl-news, .qrcl-quotes, .qrcl-footer {
+    padding-left: 24px; padding-right: 24px;
+  }
+  .qrcl-hero-body { grid-template-columns: 1fr; }
+  .qrcl-cards { grid-template-columns: 1fr; }
+  .qrcl-quotes { grid-template-columns: 1fr; }
+  .qrcl-news-row { grid-template-columns: 1fr; gap: 6px; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+const projects = [
+  { title: "Distributed inference router", author: "anya.k", prompts: 7, files: 24, plus: 1402, minus: 88, edit: 51, badge: "Oracle" },
+  { title: "Vector index sharding strategy", author: "rmoreno", prompts: 31, files: 62, plus: 894, minus: 312, edit: 140, badge: "Librarian" },
+  { title: "Quark protocol handshake refactor", author: "tlin", prompts: 4, files: 9, plus: 421, minus: 17, edit: 12, badge: null },
+  { title: "Streaming token aggregator", author: "devon", prompts: 12, files: 28, plus: 670, minus: 41, edit: 33, badge: "Oracle" },
+  { title: "Eval harness for chain-of-thought", author: "priya.s", prompts: 22, files: 47, plus: 1108, minus: 220, edit: 88, badge: "Oracle" },
+];
+
+const news = [
+  { date: "April 22, 2026", title: "Quarical Deep Is Generally Available", desc: "After a long beta, Deep is now open to every account on every plan." },
+  { date: "April 14, 2026", title: "The Oracle Speaks Faster", desc: "Median oracle latency is down 38% across all model routes." },
+  { date: "April 02, 2026", title: "Introducing the Quark Protocol", desc: "A new wire format for streaming agent state between subprocesses." },
+  { date: "March 19, 2026", title: "Pricing, Reconsidered", desc: "We've moved to pure pay-as-you-go. No seats, no minimums, no surprises." },
+  { date: "March 04, 2026", title: "Quarical Raises $24M Series A", desc: "Led by Founders Fund, with participation from a small group of operators." },
+];
+
+const quotes = [
+  { text: "Quarical doesn't feel like an AI product. It feels like a workshop tool — sharp, specific, and respectful of the craft.", author: "@maevereads" },
+  { text: "We replaced three internal services with a single Quarical pipeline. The bill went down. The reliability went up.", author: "@costanza_eng" },
+  { text: "The Oracle is uncanny. It's the first agent I've used that admits when it doesn't know.", author: "@hpark" },
+  { text: "Pay-as-you-go pricing that actually means pay-as-you-go. No quarterly call. No 'enterprise tier.' Just an invoice.", author: "@ftadepalli" },
+];
+
+function Logo() {
+  return (
+    <svg viewBox="0 0 120 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="none" stroke="currentColor" strokeWidth="1.4">
+        <circle cx="18" cy="18" r="11" />
+        <ellipse cx="18" cy="18" rx="11" ry="4.5" transform="rotate(28 18 18)" />
+        <ellipse cx="18" cy="18" rx="11" ry="4.5" transform="rotate(-28 18 18)" />
+        <line x1="22" y1="24" x2="30" y2="32" />
+      </g>
+      <text x="40" y="24" fontFamily="Fraunces, serif" fontSize="18" fontStyle="italic" fontWeight="500" fill="currentColor" letterSpacing="0.5">
+        quarical
+      </text>
+    </svg>
+  );
+}
+
+function Topography({ seed = 0 }) {
+  const rows = 8;
+  const lines = [];
+  for (let i = 0; i < rows; i++) {
+    const y = 30 + i * 20;
+    const amp = 14 + ((seed + i) % 4) * 4;
+    const phase = (seed * 23 + i * 17) % 360;
+    const d = `M -10 ${y} ` +
+      Array.from({ length: 24 }, (_, n) => {
+        const x = n * 30;
+        const yy = y + Math.sin((n + phase / 40) * 0.6) * amp;
+        return `L ${x} ${yy.toFixed(1)}`;
+      }).join(" ");
+    lines.push(<path key={i} d={d} fill="none" stroke="currentColor" strokeWidth="0.6" opacity={0.18 + i * 0.02} />);
+  }
+  return (
+    <svg viewBox="0 0 600 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      {lines}
+    </svg>
+  );
+}
+
+function Quarical() {
+  const [platform, setPlatform] = useState("Mac/Linux");
+
+  return (
+    <div className="qrcl-root">
+      <div className="qrcl-grid" aria-hidden="true">
+        <span /><span /><span /><span /><span /><span />
+      </div>
+
+      <nav className="qrcl-nav">
+        <a href="#" className="qrcl-logo" aria-label="Quarical"><Logo /></a>
+        <div className="qrcl-nav-links">
+          <a href="#chronicle">Chronicle</a>
+          <a href="#manual">Manual</a>
+          <a href="#models">Models</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#signin">Sign In</a>
+          <a href="#start" className="qrcl-cta-sm">Get Started</a>
+        </div>
+      </nav>
+
+      <section className="qrcl-hero">
+        <div className="qrcl-hero-inner">
+          <h1 className="qrcl-h1">
+            <em>Tuned</em> To The<br />Smallest Signal
+          </h1>
+          <div className="qrcl-hero-body">
+            <p className="qrcl-lede">
+              Quarical is the agent platform for teams who measure intelligence in milliseconds and millions of tokens.
+            </p>
+            <p className="qrcl-sub">Pay as you go. No seats. No floor.</p>
+          </div>
+          <div className="qrcl-hero-cta">
+            <a href="#start" className="qrcl-cta">Get Started for Free →</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="qrcl-install">
+        <div className="qrcl-section-label">
+          <span className="qrcl-eyebrow">INSTALL QUARICAL</span>
+          <h2 className="qrcl-h2">Available<br />in the terminal</h2>
+        </div>
+
+        <div className="qrcl-terminal">
+          <div className="qrcl-terminal-bar">
+            <span className="qrcl-dot qrcl-dot-r" />
+            <span className="qrcl-dot qrcl-dot-y" />
+            <span className="qrcl-dot qrcl-dot-g" />
+            <span className="qrcl-terminal-title">~/projects/orbital-ledger</span>
+          </div>
+          <div className="qrcl-terminal-body">
+            <pre>{`> quarical "Trace the regression in the consensus loop."
+
+  Reading 14 files
+  Found 3 candidate sites in src/consensus/
+
+  ${'\u00B7'} src/consensus/quorum.ts:84 — round counter wraps at i32 boundary
+  ${'\u00B7'} src/consensus/quorum.ts:217 — leader timeout uses ms, peers use s
+  ${'\u00B7'} src/consensus/log.ts:42  — fsync skipped under high contention
+
+`}<span className="qrcl-tx-amber">Oracle:</span>{` The unit conversion at line 217 is the
+proximate cause. The ms/s mismatch becomes pathological once the
+cluster crosses ~32 peers, which matches your incident timeline.
+Suggested patch attached. Run with --apply to commit.
+
+`}<span className="qrcl-tx-faint">[smart]</span>{` `}<span className="qrcl-cursor">▍</span></pre>
+          </div>
+        </div>
+
+        <div className="qrcl-install-cmd">
+          <div className="qrcl-tabs">
+            <span className="qrcl-eyebrow">INSTALL</span>
+            {["Mac/Linux", "Windows"].map((p) => (
+              <button
+                key={p}
+                className={`qrcl-tab ${platform === p ? "is-active" : ""}`}
+                onClick={() => setPlatform(p)}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+          <div className="qrcl-cmd">
+            <code>
+              {platform === "Mac/Linux"
+                ? "curl -fsSL https://quarical.com/install.sh | bash"
+                : "iwr -useb https://quarical.com/install.ps1 | iex"}
+            </code>
+            <button className="qrcl-copy" aria-label="Copy">⧉</button>
+          </div>
+        </div>
+      </section>
+
+      <section className="qrcl-explore">
+        <div className="qrcl-section-label">
+          <span className="qrcl-eyebrow">SOCIAL</span>
+          <h2 className="qrcl-h2">Explore<br /><em>With Us</em></h2>
+        </div>
+        <div>
+          <div className="qrcl-explore-head">
+            <p>See how teams are building with Quarical</p>
+            <div className="qrcl-arrows">
+              <button aria-label="Previous">‹</button>
+              <button aria-label="Next">›</button>
+            </div>
+          </div>
+          <div className="qrcl-cards">
+            {projects.map((p, i) => (
+              <article key={i} className="qrcl-card">
+                <div className="qrcl-card-topo" aria-hidden="true">
+                  <Topography seed={i} />
+                </div>
+                <h3 className="qrcl-card-title">{p.title}</h3>
+                <div className="qrcl-card-author">
+                  <span className="qrcl-avatar" aria-hidden="true" />
+                  {p.author}
+                </div>
+                <div className="qrcl-card-meta">
+                  <div className="qrcl-meta-left">
+                    <span>◌ {p.prompts} prompts</span>
+                    <span>▤ {p.files} files</span>
+                    {p.badge && <span className="qrcl-badge">◉ {p.badge}</span>}
+                  </div>
+                  <div className="qrcl-meta-right">
+                    <span className="qrcl-plus">+{p.plus}</span>
+                    <span className="qrcl-minus">-{p.minus}</span>
+                    <span className="qrcl-tilde">~{p.edit}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="qrcl-news">
+        <div className="qrcl-section-label">
+          <span className="qrcl-eyebrow">NEWS</span>
+          <h2 className="qrcl-h2">Announcements<br /><em>of Quarical</em></h2>
+        </div>
+        <div className="qrcl-news-list">
+          {news.map((n, i) => (
+            <a key={i} href="#" className="qrcl-news-row">
+              <span className="qrcl-news-date">{n.date.toUpperCase()}</span>
+              <div className="qrcl-news-body">
+                <h4 className="qrcl-news-title">{n.title}</h4>
+                <p className="qrcl-news-desc">{n.desc}</p>
+              </div>
+            </a>
+          ))}
+          <a href="#chronicle" className="qrcl-news-more">VIEW MORE NEWS →</a>
+        </div>
+      </section>
+
+      <section className="qrcl-quotes">
+        {quotes.map((q, i) => (
+          <figure key={i} className="qrcl-quote">
+            <blockquote>"{q.text}"</blockquote>
+            <figcaption>— {q.author}</figcaption>
+          </figure>
+        ))}
+      </section>
+
+      <footer className="qrcl-footer">
+        <div className="qrcl-footer-brand">
+          <div className="qrcl-logo qrcl-logo-lg"><Logo /></div>
+          <p className="qrcl-status"><span className="qrcl-status-dot" /> All Systems Operational</p>
+          <ul className="qrcl-footer-meta">
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div className="qrcl-footer-cols">
+          <div>
+            <h5>Product</h5>
+            <ul><li><a href="#">Get Started</a></li><li><a href="#">Sign In</a></li><li><a href="#">Manual</a></li><li><a href="#">Models</a></li></ul>
+          </div>
+          <div>
+            <h5>Resources</h5>
+            <ul><li><a href="#">Chronicle</a></li><li><a href="#">Pricing</a></li><li><a href="#">Podcast</a></li><li><a href="#">Press Kit</a></li></ul>
+          </div>
+          <div>
+            <h5>Guides</h5>
+            <ul><li><a href="#">How to Build an Agent</a></li><li><a href="#">Context Management</a></li></ul>
+          </div>
+          <div>
+            <h5>Community</h5>
+            <ul><li><a href="#">𝕏 @quarical</a></li><li><a href="#">Insiders</a></li><li><a href="#">YouTube</a></li></ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Quarical />);
+</script>
+</body>
+</html>

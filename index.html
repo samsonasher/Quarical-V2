@@ -70,9 +70,31 @@ html, body { margin: 0; padding: 0; background: #0c1420; }
 /* Hero */
 .qrcl-hero {
   position: relative; z-index: 1;
-  padding: 60px 56px 100px;
+  padding: 80px 56px 160px;
+  min-height: 720px;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
 }
-.qrcl-hero-inner { max-width: 1200px; margin: 0 auto; padding-left: 16.66%; }
+.qrcl-hero-bg {
+  position: absolute; inset: 0;
+  z-index: -1;
+  background-image: url('Jupiter.png');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  opacity: 1;
+}
+/* Subtle blend at edges only — image already has natural dark-left gradient */
+.qrcl-hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, var(--bg) 0%, rgba(12,20,32,0.5) 18%, transparent 35%),
+    linear-gradient(180deg, transparent 0%, transparent 70%, var(--bg) 100%);
+}
+.qrcl-hero-inner { max-width: 1200px; margin: 0 auto; padding-left: 16.66%; position: relative; }
 .qrcl-h1 {
   font-family: var(--serif);
   font-weight: 500;
@@ -493,6 +515,7 @@ function Quarical() {
       </nav>
 
       <section className="qrcl-hero">
+        <div className="qrcl-hero-bg" aria-hidden="true" />
         <div className="qrcl-hero-inner">
           <h1 className="qrcl-h1">
             <em>Tuned</em> To The<br />Smallest Signal
